@@ -180,10 +180,12 @@ class RepVGG(nn.Module):
 
     def forward(self, x):
         out = self.stage0(x)
-        for i in range(4):  # Assuming there are 4 stages
-            stage = getattr(self, 'stage' + str(i))
-            for j in range(len(stage)):  # Iterate through blocks in the stage
-                out = stage[j](out)
+        for stage in (self.stage1, self.stage2, self.stage3, self.stage4):
+            for block in stage:
+                if self.use_checkpoint:
+                    out = checkpoint.checkpoint(block, out)
+                else:
+                    out = block(out)
         out = self.gap(out)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
