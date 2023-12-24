@@ -181,7 +181,7 @@ class RepVGG(nn.Module):
     def forward(self, x):
         out = self.stage0(x)
         for i in range(4):  # Assuming there are 4 stages
-            stage = getattr(self, f'stage{i+1}')
+            stage = getattr(self, 'stage' + str(i))
             for j in range(len(stage)):  # Iterate through blocks in the stage
                 out = stage[j](out)
         out = self.gap(out)
