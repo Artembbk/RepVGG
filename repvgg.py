@@ -180,10 +180,14 @@ class RepVGG(nn.Module):
 
     def forward(self, x):
         out = self.stage0(x)
-        out = self.stage1(out)
-        out = self.stage2(out)
-        out = self.stage3(out)
-        out = self.stage4(out)
+        for block in self.stage1:
+            out = block(out)
+        for block in self.stage2:
+            out = block(out)
+        for block in self.stage3:
+            out = block(out)
+        for block in self.stage4:
+            out = block(out)
         out = self.gap(out)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
