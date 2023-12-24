@@ -182,10 +182,7 @@ class RepVGG(nn.Module):
         out = self.stage0(x)
         for stage in (self.stage1, self.stage2, self.stage3, self.stage4):
             for block in stage:
-                if self.use_checkpoint:
-                    out = checkpoint.checkpoint(block, out)
-                else:
-                    out = block(out)
+                out = block(out)
         out = self.gap(out)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
